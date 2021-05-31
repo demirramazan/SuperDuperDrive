@@ -18,7 +18,6 @@ public class EncryptionService {
 
     public String encryptValue(String data, String key) {
         byte[] encryptedValue = null;
-
         try {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             SecretKey secretKey = new SecretKeySpec(key.getBytes(), "AES");
