@@ -1,12 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/bootstrap.min.css}">
+
     <title>Error Page</title>
 </head>
 <body>
-<div>
-    <p>There is a error</p>
-</div>
+<h1>Sorry something went wrong..!</h1>
+<a>
+    Please continue to the <a id="loginlink" th:href="@{/login}">login</a> page.
+</a>
 </body>
 </html>

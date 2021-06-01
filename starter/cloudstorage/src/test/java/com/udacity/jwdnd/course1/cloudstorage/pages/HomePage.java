@@ -7,208 +7,202 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class HomePage {
+
     @FindBy(id = "logout")
     private WebElement logoutButton;
 
     @FindBy(id = "nav-files-tab")
     private WebElement fileTabButton;
 
+    @FindBy(id = "fileUpload")
+    private WebElement fileUploadElement;
+
+    @FindBy(id = "upload-btn")
+    private WebElement uploadButton;
+
     @FindBy(id = "nav-notes-tab")
     private WebElement notesTabButton;
 
-    @FindBy(id = "addNoteButton")
+    @FindBy(id = "noteTable")
+    private WebElement notesTable;
+
+    @FindBy(id = "add-note-btn")
     private WebElement addNoteButton;
 
     @FindBy(id = "note-title")
     private WebElement noteTitle;
 
     @FindBy(id = "note-description")
-    private WebElement noteDesc;
+    private WebElement noteDescription;
 
-    @FindBy(id = "addCredentialButton")
-    private WebElement addCredButton;
-
-    @FindBy(id = "credential-url")
-    private WebElement credUrl;
-
-    @FindBy(id = "credential-username")
-    private WebElement credUsername;
-
-    @FindBy(id = "credential-password")
-    private WebElement credPassword;
+    @FindBy(id = "noteSubmit")
+    private WebElement noteSubmitButton;
 
     @FindBy(id = "nav-credentials-tab")
-    private WebElement credsTabButton;
+    private WebElement credentialTabButton;
+
+    @FindBy(id = "add-credential-btn")
+    private WebElement addCredentialButton;
+
+    @FindBy(id = "credential-url")
+    private WebElement credentialUrl;
+
+    @FindBy(id = "credential-username")
+    private WebElement credentialUsername;
+
+    @FindBy(id = "credential-password")
+    private WebElement credentialPassword;
+
+    @FindBy(id = "credentialSubmit")
+    private WebElement credentialSubmitButton;
+
+    @FindBy(id = "tbl-note-del-btn")
+    private WebElement noteDeleteBtn;
+
+    @FindBy(id = "edit-note-btn")
+    private WebElement noteEditBtn;
+
+    @FindBy(id = "credentialTable")
+    private WebElement credentialTable;
+
+    @FindBy(id = "credential-edit-btn")
+    private WebElement editCredentialBtn;
+
+    @FindBy(id = "credential-delete-tbl")
+    private WebElement deleteCredentialBtn;
 
     private WebDriver driver;
+
+    private WebDriverWait webDriverWait;
 
     public HomePage(WebDriver driver) {
         PageFactory.initElements(driver, this);
         this.driver = driver;
-    }
-
-    public void logout() {
-        logoutButton.submit();
-    }
-
-    public void selectNotesWindow() throws InterruptedException {
-        Thread.sleep(500);
-        notesTabButton.click();
-    }
-
-    public void selectCredentialsWindow() throws InterruptedException {
-        sleep();
-        credsTabButton.click();
-    }
-
-    public String getMessage() {
-        try {
-            WebElement e = driver.findElement(By.id("message"));
-            String msg = e.getText();
-            return msg;
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public void addNote(String title, String desc) throws InterruptedException {
-        sleep();
-        addNoteButton.click();
-        sleep();
-        noteTitle.sendKeys(title);
-        noteDesc.sendKeys(desc);
-        noteTitle.submit();
-    }
-
-    public List<Note> getNotes() throws InterruptedException {
-        sleep();
-
-        List<WebElement> ids = driver.findElements(By.className("noteId"));
-        List<WebElement> titles = driver.findElements(By.className("noteTitle"));
-        List<WebElement> descriptions = driver.findElements(By.className("noteDescription"));
-        List<Note> noteList = new ArrayList<>();
-
-        IntStream.range(0, ids.size()).forEach(i -> {
-            Integer id = Integer.parseInt(ids.get(i).getAttribute("value"));
-            String title = titles.get(i).getText();
-            String desc = descriptions.get(i).getText();
-            Note note = Note.builder().noteTitle(title).noteDescription(desc).build();
-            note.setNoteId(id);
-            noteList.add(note);
-        });
-
-        return noteList;
-    }
-
-    public boolean noteIfPresent(Note n, List<Note> notes) {
-        return notes.stream().anyMatch(note -> note.getNoteTitle().equals(n.getNoteTitle())
-                && note.getNoteDescription().equals(n.getNoteDescription()));
-    }
-
-    public void updateNote(int noteid, String title, String desc) throws InterruptedException {
-        WebElement editNoteButton = driver.findElement(By.id("" + noteid));
-        editNoteButton.click();
-        sleep();
-        noteTitle.clear();
-        noteTitle.sendKeys(title);
-        noteDesc.clear();
-        noteDesc.sendKeys(desc);
-        noteTitle.submit();
-    }
-
-    public Integer getNoteId(String notetitle, String notedescription, ArrayList<Note> notes) {
-        Integer noteId = notes.stream().filter(n -> n.getNoteTitle().equals(notetitle)
-                && n.getNoteDescription().equals(notedescription))
-                .map(Note::getNoteId).findFirst().orElse(null);
-
-        return noteId;
-    }
-
-    public void deleteNote(Integer id) throws InterruptedException {
-        WebElement delNoteButton = driver.findElement(By.id("delete" + id));
-        delNoteButton.click();
-        sleep();
+        webDriverWait = new WebDriverWait(driver, 500);
     }
 
 
-    public void addCred(String url, String username, String password) throws InterruptedException {
-        addCredButton.click();
-        sleep();
-        credUrl.sendKeys(url);
-        credUsername.sendKeys(username);
-        credPassword.sendKeys(password);
-        credUrl.submit();
+    public void selectNoteTab() throws InterruptedException {
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(notesTabButton)).click();
     }
+
+    public void selectNoteTable() throws InterruptedException {
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(notesTable)).click();
+    }
+
+    public List<WebElement> notesTableElementList() throws InterruptedException {
+        return notesTable.findElements(By.tagName("td"));
+    }
+
+    public void clickNoteEditBtn() {
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(addNoteButton)).click();
+    }
+
+    public void addNewNote(Note note) throws InterruptedException {
+        noteTitle.sendKeys(note.getNoteTitle());
+        noteDescription.sendKeys(note.getNoteDescription());
+    }
+
+    public void clickNoteSaveBtn() {
+        noteSubmitButton.submit();
+    }
+
+    public Note getNote() {
+        String noteTitle = webDriverWait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("tbl-note-title")))).getText();
+        String noteDescription = webDriverWait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.id("tbl-note-desc")))).getText();
+        return Note.builder().noteTitle(noteTitle).noteDescription(noteDescription).build();
+    }
+
+    public void setNoteTitle(String newNoteTitle) {
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(noteTitle)).clear();
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(noteTitle)).sendKeys(newNoteTitle);
+    }
+
+    public void setNoteDescription(String newNoteDescription) {
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(noteDescription)).clear();
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(noteDescription)).sendKeys(newNoteDescription);
+    }
+
+    public void clickEditNote() {
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(noteEditBtn)).click();
+    }
+
+    public void clickDeleteNote() {
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(noteDeleteBtn)).click();
+    }
+
+    public void selectCredentialTab() {
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(credentialTabButton)).click();
+    }
+
+    public void clickAddCredentialButton() {
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(addCredentialButton)).click();
+    }
+
+    public void addNewCredential(Credential credential) throws InterruptedException {
+        credentialUrl.sendKeys(credential.getUrl());
+        credentialUsername.sendKeys(credential.getUsername());
+        credentialPassword.sendKeys(credential.getPassword());
+    }
+
+    public void selectCredentialSaveSubmit() {
+        credentialSubmitButton.submit();
+    }
+
 
     public List<Credential> getCredentials() throws InterruptedException {
         sleep();
-        List<WebElement> ids = driver.findElements(By.className("credentialId"));
-        List<WebElement> urls = driver.findElements(By.className("credentialUrl"));
-        List<WebElement> usernames = driver.findElements(By.className("credentialUsername"));
-        List<WebElement> passwords = driver.findElements(By.className("credentialPassword"));
-        List<Credential> creds = new ArrayList<>();
-        for (int i = 0; i < urls.size(); ++i) {
-            try {
-                Integer id = Integer.parseInt(ids.get(i).getAttribute("value"));
-                String url = urls.get(i).getText();
-                String username = usernames.get(i).getText();
-                String password = passwords.get(i).getAttribute("value");
-                Credential cred = Credential.builder()
-                        .url(url).username(username).password(password)
-                        .build();
-                cred.setCredentialId(id);
-                creds.add(cred);
-            } catch (Exception e) {
-            }
-        }
-        return creds;
+        List<WebElement> ids = driver.findElements(By.id("credential-tbl-id"));
+        List<WebElement> urls = driver.findElements(By.id("credential-tbl-url"));
+        List<WebElement> usernames = driver.findElements(By.id("credential-tbl-uname"));
+        List<WebElement> passwords = driver.findElements(By.id("credential-tbl-pass"));
+        List<Credential> credentials = new ArrayList<>();
+        IntStream.range(0, ids.size())
+                .forEach(i -> {
+                    String url = urls.get(i).getText();
+                    String username = usernames.get(i).getText();
+                    String password = passwords.get(i).getText();
+                    Credential cred = Credential.builder()
+                            .url(url).username(username).password(password)
+                            .build();
+                    credentials.add(cred);
+                });
+
+        return credentials;
     }
 
-    private void sleep() throws InterruptedException {
+    public void selectCredentialTable() {
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(credentialTable)).click();
+    }
+
+    public void clickEditCredential() {
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(editCredentialBtn)).click();
+    }
+
+
+    public void setCredentialUrl(String credentialModifyUrl) {
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(credentialUrl)).clear();
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(credentialUrl)).sendKeys(credentialModifyUrl);
+    }
+
+    public void clickDeleteCredential() {
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(deleteCredentialBtn)).click();
+    }
+
+    public void logout() {
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(logoutButton)).click();
+    }
+
+    public void sleep() throws InterruptedException {
         Thread.sleep(500);
     }
 
-    public boolean credPresent(Credential c, ArrayList<Credential> creds) {
-        for (Credential cred : creds) {
-            if (cred.getUrl().equals(c.getUrl())
-                    && cred.getUsername().equals(c.getUsername()) && cred.getPassword().equals(c.getPassword()))
-                return true;
-        }
-        return false;
-    }
-
-    public void updateCred(int credId, String url, String username, String password) throws InterruptedException {
-        WebElement editCredButton = driver.findElement(By.id("upd" + credId));
-        editCredButton.click();
-        Thread.sleep(500);
-        credUrl.clear();
-        credUrl.sendKeys(url);
-        credUsername.clear();
-        credUsername.sendKeys(username);
-        credPassword.clear();
-        credPassword.sendKeys(password);
-        credUrl.submit();
-    }
-
-    public Integer getCredId(String url, String username, String password, List<Credential> creds) {
-        for (Credential cred : creds)
-            if (cred.getUrl().equals(url)
-                    && cred.getUsername().equals(username) && cred.getPassword().equals(password))
-                return cred.getCredentialId();
-        return null;
-    }
-
-    public void deleteCred(Integer id) throws InterruptedException {
-        WebElement delCredButton = driver.findElement(By.id("deleteCrd" + id));
-        delCredButton.click();
-        sleep();
-    }
 }
