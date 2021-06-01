@@ -39,7 +39,10 @@ public class CredentialService {
 
     public void updateCredential(Integer credentialId, String url, String username, String password) {
         Credential credential = credentialMapper.getCredential(credentialId);
-        String encryptedPassword = encryptionService.encryptValue(password, credential.getKey());
+        String encryptedPassword = password;
+        if (!credential.getPassword().equals(password)) {
+            encryptedPassword = encryptionService.encryptValue(password, credential.getKey());
+        }
         credentialMapper.updateCredential(credentialId, url, username, encryptedPassword);
     }
 

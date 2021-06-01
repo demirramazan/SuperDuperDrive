@@ -40,28 +40,27 @@ public class FileController {
             return "redirect:/home";
         }
         if (fileUpload.getSize() > AppConstant.MAX_FILE_SIZE.longValue()) {
-            redirectAttributes.addAttribute("errorMessage", MAX_FILE_SIZE_EXCEPTION);
+            redirectAttributes.addFlashAttribute("errorMessage", MAX_FILE_SIZE_EXCEPTION);
             return "redirect:/home";
         }
         fileService.saveFile(fileUpload, userId);
-        redirectAttributes.addFlashAttribute("successMessage", "File upload is success.");
+        redirectAttributes.addFlashAttribute("successMessage", "File upload is successfully.");
         return "redirect:/home";
     }
 
     @GetMapping("/{fileId}")
     @ResponseBody
-    public ResponseEntity<Resource> getFileView(@PathVariable Integer fileId, Model model) {
+    public ResponseEntity<Resource> getFileView(@PathVariable Integer fileId, RedirectAttributes redirectAttributes) {
         File file = fileService.getFileById(fileId);
-
-        model.addAttribute("result", "success");
+        redirectAttributes.addFlashAttribute("successMessage", "File download is successfully.");
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + file.getFileName() + "\"").body(new ByteArrayResource(file.getFileData()));
     }
 
     @GetMapping("/delete/{fileId}")
-    public String deleteFile(@PathVariable Integer fileId,  RedirectAttributes redirectAttributes) {
+    public String deleteFile(@PathVariable Integer fileId, RedirectAttributes redirectAttributes) {
         fileService.deleteFile(fileId);
-        redirectAttributes.addAttribute("successMessage", "Delete file is success..");
+        redirectAttributes.addFlashAttribute("successMessage", "Delete file is successfully..");
         return "redirect:/home";
     }
 

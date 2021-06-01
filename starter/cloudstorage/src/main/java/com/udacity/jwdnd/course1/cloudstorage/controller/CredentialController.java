@@ -27,27 +27,24 @@ public class CredentialController {
             if (credential.getCredentialId() != null) {
                 credentialService.updateCredential(credential.getCredentialId(), credential.getUrl(), credential.getUsername(), credential.getPassword());
                 log.info("Credential updated successfully");
-                redirectAttributes.addAttribute("successMessage", "Credential updated successfully!");
+                redirectAttributes.addFlashAttribute("successMessage", "Credential updated successfully!");
             } else {
                 credential.setUserId(userid);
                 credentialService.addCredential(credential);
                 log.info("Credential added successfully");
-                redirectAttributes.addAttribute("successMessage", "Credential added successfully!");
+                redirectAttributes.addFlashAttribute("successMessage", "Credential added successfully!");
             }
         } catch (Exception e) {
             log.error("Error occured: " + e.getMessage());
-            redirectAttributes.addAttribute("errorMessage", "Credential added/updated error occured!");
+            redirectAttributes.addFlashAttribute("errorMessage", "Credential added/updated error occured!");
         }
-
-
         return "redirect:/home";
     }
 
     @GetMapping("/delete/{credentialId}")
-    public String deleteNote(@PathVariable Integer credentialId, RedirectAttributes redirectAttributes) {
-        int userid = utilService.getUserId();
+    public String deletCredential(@PathVariable Integer credentialId, RedirectAttributes redirectAttributes) {
         credentialService.deleteCredential(credentialId);
-        redirectAttributes.addAttribute("successMessage", "Credential deleted successfully!");
+        redirectAttributes.addFlashAttribute("successMessage", "Credential deleted successfully!");
         return "redirect:/home";
     }
 }

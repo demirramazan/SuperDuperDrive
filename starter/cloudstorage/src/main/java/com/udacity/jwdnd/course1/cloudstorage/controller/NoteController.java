@@ -60,8 +60,7 @@ public class NoteController {
     @GetMapping("/delete/{noteId}")
     public String deleteNote(@PathVariable Integer noteId, RedirectAttributes redirectAttributes) {
         noteService.deleteNote(noteId);
-        List<Note> noteList = noteService.getNotes(utilService.getUserId());
-        redirectAttributes.addAttribute("successMessage", "Note deleted successfully!");
+        redirectAttributes.addFlashAttribute("successMessage", "Note deleted successfully!");
         return "redirect:/home";
     }
 }
