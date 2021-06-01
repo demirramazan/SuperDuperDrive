@@ -23,6 +23,7 @@ public class CredentialService {
                     .url(credential.getUrl())
                     .username(credential.getUsername())
                     .password(credential.getPassword())
+                    .decryptPassword(encryptionService.decryptValue(credential.getPassword(), credential.getKey()))
                     .build();
             credentials.add(credential1);
         });

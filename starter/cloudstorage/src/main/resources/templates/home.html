@@ -170,6 +170,7 @@
                             <th th:text="${cred.url}" id="credential-tbl-url" scope="row">Credential URL</th>
                             <td th:text="${cred.username}" id="credential-tbl-uname"> Credential Username</td>
                             <td th:text="${cred.password}" id="credential-tbl-pass"> Credential Password</td>
+                            <input type="hidden"  th:value="${cred.decryptPassword}" class="credentialPassword">
                         </tr>
                         </tbody>
                     </table>
@@ -202,6 +203,8 @@
                                         <label for="credential-password" class="col-form-label">Password</label>
                                         <input type="text" name="password" class="form-control" id="credential-password"
                                                maxlength="30" required>
+
+
                                     </div>
                                     <button id="credentialSubmit" type="submit" class="d-none"></button>
                                 </form>
@@ -254,7 +257,7 @@
         $('#credential-id').val(cred.credentialId);
         $('#credential-url').val(cred.url);
         $('#credential-username').val(cred.username);
-        $('#credential-password').val(cred.password);
+        $('#credential-password').val(cred.decryptPassword);
         $('#credentialModal').modal('show');
     }
 </script>
