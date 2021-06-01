@@ -16,11 +16,11 @@
         </form>
     </div>
     <div id="notification-div">
-        <div th:if="${errorMessage}" class="alert alert-danger ">
-            <span th:text="${errorMessage}">Exist</span>
+        <div th:if="${errorMessage}" class="alert alert-danger fill-parent">
+            <span class="display-5" th:text="${errorMessage}">Exist</span>
         </div>
-        <div th:if="${successMessage}" class="alert alert-success ">
-            <span th:text="${successMessage}">File added.</span>
+        <div th:if="${successMessage}" class="alert alert-success fill-parent">
+            <span class="display-5" th:text="${successMessage}">File added.</span>
         </div>
     </div>
     <div id="contentDiv" style="clear: right;">
@@ -93,6 +93,8 @@
                                 <button id="edit-note-btn" type="button" class="btn btn-success"
                                         th:onclick="editNoteModal([[${note}]])">Edit
                                 </button>
+                                <input type="hidden" name="noteid" id="note-id-delete"
+                                       th:value="${note.noteid}" class="noteId">
                                 <a id="tbl-note-del-btn" th:href="@{'/notes/delete/'+${note.noteId}}"
                                    class="btn btn-danger">Delete</a>
                             </td>
@@ -161,12 +163,12 @@
                                 <button type="button" class="btn btn-success" id="credential-edit-btn"
                                         th:onclick="editCredentialModal([[${cred}]])">Edit
                                 </button>
-                                <a id="credential-delete-tbl" class="btn btn-danger" th:href="@{'/credentials/delete/'+${cred.credentialId}}">Delete</a>
+                                <a id="credential-delete-tbl" class="btn btn-danger"
+                                   th:href="@{'/credentials/delete/'+${cred.credentialId}}">Delete</a>
                             </td>
-                            <input  type="hidden" th:text="${cred.credentialId}"
-                                   id="credential-tbl-id">
+                            <input type="hidden" th:value="${cred.credentialId}" id="credential-tbl-id">
                             <th th:text="${cred.url}" id="credential-tbl-url" scope="row">Credential URL</th>
-                            <td th:text="${cred.username}"  id="credential-tbl-uname"> Credential Username</td>
+                            <td th:text="${cred.username}" id="credential-tbl-uname"> Credential Username</td>
                             <td th:text="${cred.password}" id="credential-tbl-pass"> Credential Password</td>
                         </tr>
                         </tbody>

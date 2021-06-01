@@ -22,7 +22,7 @@ public class CredentialService {
             Credential credential1 = Credential.builder().credentialId(credential.getCredentialId())
                     .url(credential.getUrl())
                     .username(credential.getUsername())
-                    .password(encryptionService.decryptValue(credential.getPassword(), credential.getKey()))
+                    .password(credential.getPassword())
                     .build();
             credentials.add(credential1);
         });

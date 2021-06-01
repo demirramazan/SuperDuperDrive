@@ -20,6 +20,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class CloudStorageApplicationTests {
 
     public static final String NOTE_MODIFY_TITLE = "Note Modify Title";
@@ -53,6 +54,7 @@ class CloudStorageApplicationTests {
     public void beforeEach() {
         this.driver = new ChromeDriver();
         this.webDriverWait = new WebDriverWait(driver, 500);
+        homePage = new HomePage(this.driver);
     }
 
     @AfterEach
@@ -63,19 +65,19 @@ class CloudStorageApplicationTests {
     }
 
     @Test
+    @Order(1)
     public void getLoginPage() {
         driver.get("http://localhost:" + this.port + "/login");
         assertEquals("Login", driver.getTitle());
     }
 
     @Test
+    @Order(1)
     protected void signUpAndLogin() throws InterruptedException {
         signUp();
-
         login();
     }
 
-    @Test
     protected void signUp() throws InterruptedException {
         driver.get("http://localhost:" + this.port + "/signup");
         signupPage = new SignUpPage(driver);
@@ -95,11 +97,9 @@ class CloudStorageApplicationTests {
         loginPage.submit();
         homePage.sleep();
     }
+
     @Test
-    protected void logout() throws InterruptedException {
-        homePage.logout();
-    }
-    @Test
+    @Order(3)
     public void addNoteTest() throws InterruptedException {
         signUpAndLogin();
         driver.get("http://localhost:" + this.port + "/home");
@@ -113,6 +113,7 @@ class CloudStorageApplicationTests {
         homePage.clickNoteSaveBtn();
         homePage.sleep();
         homePage.selectNoteTab();
+        homePage.selectNoteTable();
         Note n = homePage.getNote();
         homePage.sleep();
         assertEquals(n.getNoteTitle(), note.getNoteTitle());
@@ -120,12 +121,15 @@ class CloudStorageApplicationTests {
     }
 
     @Test
+    @Order(4)
     public void editNoteTest() throws InterruptedException {
         signUpAndLogin();
         driver.get("http://localhost:" + this.port + "/home");
         homePage = new HomePage(driver);
         homePage.selectNoteTab();
-        Note note = Note.builder().noteTitle("Note Sample").noteDescription("This is my sample note description").build();
+        Note note = Note.builder().noteTitle("Note Sample")
+                .noteDescription("This is my sample note description")
+                .build();
         homePage.clickNoteEditBtn();
         homePage.sleep();
         homePage.addNewNote(note);
@@ -144,13 +148,17 @@ class CloudStorageApplicationTests {
     }
 
     @Test
+    @Order(5)
     public void deleteNoteTest() throws InterruptedException {
         signUpAndLogin();
         driver.get("http://localhost:" + this.port + "/home");
         homePage = new HomePage(driver);
         homePage.selectNoteTab();
-        Note note = Note.builder().noteTitle("Note Sample").noteDescription("This is my sample note description").build();
+        Note note = Note.builder().noteTitle("Note Sample")
+                .noteDescription("This is my sample note description")
+                .build();
         homePage.clickNoteEditBtn();
+        homePage.sleep();
         homePage.addNewNote(note);
         homePage.clickNoteSaveBtn();
         homePage.sleep();
@@ -162,6 +170,7 @@ class CloudStorageApplicationTests {
     }
 
     @Test
+    @Order(6)
     public void addCredentialTest() throws InterruptedException {
         signUpAndLogin();
         driver.get("http://localhost:" + this.port + "/home");
@@ -173,11 +182,11 @@ class CloudStorageApplicationTests {
                 .password(CREDENTIAL_PASSWORD)
                 .build();
         homePage.clickAddCredentialButton();
+        homePage.sleep();
         homePage.addNewCredential(credential);
         homePage.selectCredentialSaveSubmit();
         homePage.sleep();
         homePage.selectCredentialTab();
-        homePage.sleep();
         List<Credential> credentials = homePage.getCredentials();
         homePage.sleep();
         assertTrue(credentials.size() > 0);
@@ -185,6 +194,7 @@ class CloudStorageApplicationTests {
     }
 
     @Test
+    @Order(7)
     public void updateCredentialTest() throws InterruptedException {
         signUpAndLogin();
         driver.get("http://localhost:" + this.port + "/home");
@@ -215,6 +225,7 @@ class CloudStorageApplicationTests {
     }
 
     @Test
+    @Order(8)
     public void deleteCredentialTest() throws InterruptedException {
         signUpAndLogin();
         driver.get("http://localhost:" + this.port + "/home");

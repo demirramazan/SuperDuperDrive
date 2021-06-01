@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -19,7 +20,7 @@ public class SignUpController {
     }
 
     @PostMapping("/signup")
-    public String signUp(User user, Model model) {
+    public String signUp(User user, RedirectAttributes redirectAttributes) {
         String signupError = null;
         if (userService.isUsernameAvailable(user.getUsername())) {
             signupError = "The username already exists.";
@@ -33,11 +34,12 @@ public class SignUpController {
         }
 
         if (signupError == null) {
-            model.addAttribute("signupSuccess", true);
-        } else {
-            model.addAttribute("signupError", signupError);
+            redirectAttributes.addFlashAttribute("signupSuccess", true);
+            redirectAttributes.addFlashAttribute("successMessage", "Account have been created. Please login to continue");
+            return "redirect:/login";
         }
-        return "/signup";
+        redirectAttributes.addAttribute("signupError", signupError);
+        return "redirect:/signup";
     }
 }
 

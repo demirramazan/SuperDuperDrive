@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 
@@ -27,28 +28,24 @@ public class FileController {
     private final UtilService utilService;
 
     @PostMapping("/file-upload")
-    public String fileUpload(@RequestParam("fileUpload") MultipartFile fileUpload, Model model) throws IOException {
+    public String fileUpload(@RequestParam("fileUpload") MultipartFile fileUpload, RedirectAttributes redirectAttributes) throws IOException {
         Integer userId = utilService.getUserId();
         if (fileUpload.isEmpty()) {
-            model.addAttribute("files", fileService.getFiles(userId));
-            model.addAttribute("errorMessage", "Cannot upload without selecting a file. ");
-            return "/home";
+            redirectAttributes.addAttribute("errorMessage", "Cannot upload without selecting a file. ");
+            return "redirect:/home";
         }
         File isFileExist = fileService.getFileByFileName(fileUpload.getOriginalFilename());
         if (isFileExist != null) {
-            model.addAttribute("files", fileService.getFiles(userId));
-            model.addAttribute("errorMessage", MAX_FILE_ALREADY_EXIST_EXCEPTION);
-            return "/home";
+            redirectAttributes.addFlashAttribute("errorMessage", MAX_FILE_ALREADY_EXIST_EXCEPTION);
+            return "redirect:/home";
         }
         if (fileUpload.getSize() > AppConstant.MAX_FILE_SIZE.longValue()) {
-            model.addAttribute("files", fileService.getFiles(userId));
-            model.addAttribute("errorMessage", MAX_FILE_SIZE_EXCEPTION);
-            return "/home";
+            redirectAttributes.addAttribute("errorMessage", MAX_FILE_SIZE_EXCEPTION);
+            return "redirect:/home";
         }
         fileService.saveFile(fileUpload, userId);
-        model.addAttribute("files", fileService.getFiles(userId));
-        model.addAttribute("successMessage", "File upload is success.");
-        return "/home";
+        redirectAttributes.addFlashAttribute("successMessage", "File upload is success.");
+        return "redirect:/home";
     }
 
     @GetMapping("/{fileId}")
@@ -62,11 +59,9 @@ public class FileController {
     }
 
     @GetMapping("/delete/{fileId}")
-    public String deleteFile(@PathVariable Integer fileId, Model model) {
+    public String deleteFile(@PathVariable Integer fileId,  RedirectAttributes redirectAttributes) {
         fileService.deleteFile(fileId);
-        model.addAttribute("files", fileService.getFiles(utilService.getUserId()));
-        model.addAttribute("message", "Delete file is success..");
-        model.addAttribute("result", "success");
+        redirectAttributes.addAttribute("successMessage", "Delete file is success..");
         return "redirect:/home";
     }
 

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -29,8 +30,8 @@ public class NoteController {
     public String getNotes(Model model) {
         Integer userId = utilService.getUserId();
         if (userId == null) {
-            model.addAttribute("result", "error");
-            model.addAttribute("message", "User is not found");
+            model.addAttribute("errorMessage", "User is not found");
+            return "redirect:/login";
         }
         List<Note> notes = noteService.getNotes(userId);
         model.addAttribute("notes", notes);
@@ -40,25 +41,27 @@ public class NoteController {
 
 
     @PostMapping
-    public String saveNote(Authentication authentication, Note note, Model model) {
+    public String saveNote(Note note, RedirectAttributes redirectAttributes) {
         Integer userId = utilService.getUserId();
         if (userId == null) {
-            model.addAttribute("result", "error");
+            redirectAttributes.addAttribute("errorMessage", "User is not log in!");
+            return "redirect:/login";
         }
         if (note.getNoteId() == null) {
             noteService.saveNote(userId, note);
+            redirectAttributes.addFlashAttribute("successMessage", "Note added successfully!");
         } else {
             noteService.updateNote(note.getNoteId(), note.getNoteTitle(), note.getNoteDescription());
+            redirectAttributes.addFlashAttribute("successMessage", "Note updated successfully!");
         }
         return "redirect:/home";
     }
 
     @GetMapping("/delete/{noteId}")
-    public String deleteNote(@PathVariable Integer noteId, Model model) {
+    public String deleteNote(@PathVariable Integer noteId, RedirectAttributes redirectAttributes) {
         noteService.deleteNote(noteId);
         List<Note> noteList = noteService.getNotes(utilService.getUserId());
-        model.addAttribute("notes", noteList);
-        model.addAttribute("message", "Note deleted successfully!");
+        redirectAttributes.addAttribute("successMessage", "Note deleted successfully!");
         return "redirect:/home";
     }
 }
