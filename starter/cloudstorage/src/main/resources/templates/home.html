@@ -94,7 +94,7 @@
                                         th:onclick="editNoteModal([[${note}]])">Edit
                                 </button>
                                 <input type="hidden" name="noteid" id="note-id-delete"
-                                       th:value="${note.noteid}" class="noteId">
+                                       th:value="${note.noteId}" class="noteId">
                                 <a id="tbl-note-del-btn" th:href="@{'/notes/delete/'+${note.noteId}}"
                                    class="btn btn-danger">Delete</a>
                             </td>

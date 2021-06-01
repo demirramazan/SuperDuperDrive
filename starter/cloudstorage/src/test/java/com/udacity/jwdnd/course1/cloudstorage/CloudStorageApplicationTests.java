@@ -206,15 +206,15 @@ class CloudStorageApplicationTests {
                 .password(CREDENTIAL_PASSWORD)
                 .build();
         homePage.clickAddCredentialButton();
+        homePage.sleep();
         homePage.addNewCredential(credential);
         homePage.selectCredentialSaveSubmit();
         homePage.sleep();
+        homePage.selectCredentialTab();;
         homePage.selectCredentialTable();
-        homePage.sleep();
         homePage.clickEditCredential();
         homePage.setCredentialUrl(CREDENTIAL_MODIFY_URL);
         homePage.selectCredentialSaveSubmit();
-        homePage.sleep();
         homePage.selectCredentialTab();
         homePage.sleep();
         List<Credential> credentials = homePage.getCredentials();
@@ -243,12 +243,13 @@ class CloudStorageApplicationTests {
         homePage.sleep();
         homePage.selectCredentialSaveSubmit();
         homePage.sleep();
+        homePage.selectCredentialTab();;
+        homePage.sleep();
+        homePage.selectCredentialTable();;
         homePage.clickDeleteCredential();
         homePage.sleep();
         homePage.selectCredentialTab();
-        List<Credential> credentials = homePage.getCredentials();
         homePage.sleep();
-        assertEquals(0, credentials.size());
         assertEquals("Home", driver.getTitle());
     }
 
